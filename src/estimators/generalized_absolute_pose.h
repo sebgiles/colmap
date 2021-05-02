@@ -71,6 +71,12 @@ class GP3PEstimator {
 
   // Estimate the most probable solution of the GP3P problem from a set of
   // three 2D-3D point correspondences.
+  //
+  // @param points2D   Three structs of 2D image points and relative poses of the specific
+  //                   camera in the generalized camera.
+  // @param points3D   3D world points as 3x3 matrix.
+  //
+  // @return           Most probable pose as length-1 vector of a 3x4 matrix.
   static std::vector<M_t> Estimate(const std::vector<X_t>& points2D,
                                    const std::vector<Y_t>& points3D);
 
