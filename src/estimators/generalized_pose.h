@@ -122,14 +122,17 @@ struct GeneralizedAbsolutePoseRefinementOptions {
 // @param inlier_mask          Inlier mask for 2D-3D correspondences.
 //
 // @return                     Whether pose is estimated successfully.
-bool EstimateGeneralizedAbsolutePose(const GeneralizedAbsolutePoseEstimationOptions& options,
-                          const std::vector<Eigen::Vector2d>& points2D,
-                          const std::vector<Eigen::Vector3d>& points3D,
-                          const std::vector<Eigen::Matrix3x4d>& rel_tforms,
-                          Eigen::Vector4d* qvec, Eigen::Vector3d* tvec,
-                          Camera* camera, size_t* num_inliers,
-                          std::vector<char>* inlier_mask);
-
+bool EstimateGeneralizedAbsolutePose(
+                        const GeneralizedAbsolutePoseEstimationOptions& options,
+                        const std::vector<Eigen::Vector2d>& points2D,
+                        const std::vector<Eigen::Vector3d>& points3D,
+                        const std::vector<int>& cam_idxs,                                
+                        const std::vector<Eigen::Matrix3x4d>& rel_camera_poses,
+                        const std::vector<Camera>& cameras,
+                        Eigen::Vector4d* qvec, Eigen::Vector3d* tvec,
+                        size_t* num_inliers,
+                        std::vector<char>* inlier_mask);
+                        
 // Refine absolute pose (optionally focal length) from 2D-3D correspondences.
 //
 // @param options              Refinement options.
