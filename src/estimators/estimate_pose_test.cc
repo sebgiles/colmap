@@ -58,7 +58,6 @@ BOOST_AUTO_TEST_CASE(Estimate) {
   points3D.emplace_back(3, 1.3, 4);
   points3D.emplace_back(3, 1.4, 4);
   points3D.emplace_back(2, 1, 7);
-
   size_t ptCount = points3D.size();
 
   auto points3D_faulty = points3D;
@@ -94,7 +93,7 @@ BOOST_AUTO_TEST_CASE(Estimate) {
         cam.SetParams(intrinsics_0);
       }
 
-      std::vector<int> cam_idxs(ptCount);
+      std::vector<size_t> cam_idxs(ptCount);
       for (size_t i = 0; i < ptCount; i++) cam_idxs[i] = i%kCamCount;
 
       // compute extrinsics: camera poses wrt the first camera
@@ -108,8 +107,6 @@ BOOST_AUTO_TEST_CASE(Estimate) {
                             camera_poses[i].Translation(), &rel_qvec, &rel_tvec);
         extrinsics[i] = ComposeProjectionMatrix(rel_qvec, rel_tvec);
       }
-
-
 
       // Project points to respective camera's pixel coordinates.
       std::vector<Eigen::Vector2d> points2D;

@@ -53,7 +53,7 @@ bool EstimateGeneralizedAbsolutePose(
                         const GeneralizedAbsolutePoseEstimationOptions& options,
                         const std::vector<Eigen::Vector2d>& points2D,
                         const std::vector<Eigen::Vector3d>& points3D,
-                        const std::vector<int>& cam_idxs,                                
+                        const std::vector<size_t>& cam_idxs,                                
                         const std::vector<Eigen::Matrix3x4d>& rel_camera_poses,
                         const std::vector<Camera>& cameras,
                         Eigen::Vector4d* qvec, Eigen::Vector3d* tvec,
