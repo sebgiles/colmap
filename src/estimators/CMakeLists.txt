@@ -44,6 +44,7 @@ COLMAP_ADD_SOURCES(
     homography_matrix.h homography_matrix.cc
     pose.h pose.cc
     generalized_pose.h generalized_pose.cc
+    relative_pose.h relative_pose.cc
     similarity_transform.h
     translation_transform.h
     triangulation.h triangulation.cc
