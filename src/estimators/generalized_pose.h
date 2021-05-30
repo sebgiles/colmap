@@ -132,28 +132,6 @@ bool EstimateGeneralizedAbsolutePose(
                         Eigen::Vector4d* qvec, Eigen::Vector3d* tvec,
                         size_t* num_inliers,
                         std::vector<char>* inlier_mask);
-                        
-// Refine absolute pose (optionally focal length) from 2D-3D correspondences.
-//
-// @param options              Refinement options.
-// @param inlier_mask          Inlier mask for 2D-3D correspondences.
-// @param points2D             Corresponding 2D points.
-// @param points3D             Corresponding 3D points.
-// @param qvec                 Estimated rotation component as
-//                             unit Quaternion coefficients (w, x, y, z).
-// @param tvec                 Estimated translation component.
-// @param camera               Camera for which to estimate pose. Modified
-//                             in-place to store the estimated focal length.
-//
-// @return                     Whether the solution is usable.
-bool RefineGeneralizedAbsolutePose(const GeneralizedAbsolutePoseRefinementOptions& options,
-                        const std::vector<char>& inlier_mask,
-                        const std::vector<Eigen::Vector2d>& points2D,
-                        const std::vector<Eigen::Vector3d>& points3D,
-                        const std::vector<Eigen::Matrix3x4d>& rel_tforms,
-                        Eigen::Vector4d* qvec, Eigen::Vector3d* tvec,
-                        Camera* camera);
-
 }  // namespace colmap
 
 #endif  // COLMAP_SRC_ESTIMATORS_GENERALIZED_POSE_H_
