@@ -267,6 +267,68 @@ class RelativePoseCostFunction {
   const double y2_;
 };
 
+class GeneralizedRelativePoseCostFunction {
+ public:
+  GeneralizedRelativePoseCostFunction(const Eigen::Vector2d& x1, const Eigen::Vector2d& x2)
+      : x1_(x1(0)), y1_(x1(1)), x2_(x2(0)), y2_(x2(1)) {}
+
+  static ceres::CostFunction* Create(const Eigen::Vector2d& x1,
+                                     const Eigen::Vector2d& x2) {
+    return (new ceres::AutoDiffCostFunction<GeneralizedRelativePoseCostFunction, 1, 4, 3>(
+        new GeneralizedRelativePoseCostFunction(x1, x2)));
+  }
+
+  template <typename T>
+  bool operator()(const T* const qvec_0, const T* const tvec_0,
+                  const T* const qvec_1, const T* const tvec_1,
+                  T* residuals) const {
+    
+    // Concatenate rotations.
+    T qvec[4];
+    //T qvec_0_inv = qvec_0;
+    //qvec_0_inv[0] = qvec_0_inv[0];
+    ceres::QuaternionProduct(qvec_1, qvec_0, qvec);
+
+    // Concatenate translations.
+    T tvec[3];
+    ceres::UnitQuaternionRotatePoint(qvec_1, tvec_0, tvec);
+    tvec[0] -= tvec_0[0];
+    tvec[1] -= tvec_0[1];
+    tvec[2] -= tvec_0[2];
+
+    Eigen::Matrix<T, 3, 3, Eigen::RowMajor> R;
+    ceres::QuaternionToRotation(qvec, R.data());
+
+    // Matrix representation of the cross product t x R.
+    Eigen::Matrix<T, 3, 3> t_x;
+    t_x << T(0), -tvec[2], tvec[1], tvec[2], T(0), -tvec[0], -tvec[1], tvec[0],
+        T(0);
+
+    // Essential matrix.
+    const Eigen::Matrix<T, 3, 3> E = t_x * R;
+
+    // Homogeneous image coordinates.
+    const Eigen::Matrix<T, 3, 1> x1_h(T(x1_), T(y1_), T(1));
+    const Eigen::Matrix<T, 3, 1> x2_h(T(x2_), T(y2_), T(1));
+
+    // Squared sampson error.
+    const Eigen::Matrix<T, 3, 1> Ex1 = E * x1_h;
+    const Eigen::Matrix<T, 3, 1> Etx2 = E.transpose() * x2_h;
+    const T x2tEx1 = x2_h.transpose() * Ex1;
+    residuals[0] = x2tEx1 * x2tEx1 /
+                   (Ex1(0) * Ex1(0) + Ex1(1) * Ex1(1) + Etx2(0) * Etx2(0) +
+                    Etx2(1) * Etx2(1));
+
+    return true;
+  }
+
+ private:
+  const double x1_;
+  const double y1_;
+  const double x2_;
+  const double y2_;
+};
+
 }  // namespace colmap
 
 #endif  // COLMAP_SRC_BASE_COST_FUNCTIONS_H_
